@@ -14,6 +14,8 @@ use SilverStripe\Security\SecurityToken;
  */
 class WebserviceAuthenticator
 {
+
+    /** @phpstan-ignore property.onlyWritten */
     private static array $dependencies = [
         'tokenAuthenticator'    => TokenAuthenticator::class,
     ];
