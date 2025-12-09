@@ -1,17 +1,13 @@
 # SilverStripe API Wrapper
 
-[![Latest Stable Version](https://poser.pugx.org/symbiote/silverstripe-apiwrapper/version.svg)](https://github.com/symbiote/silverstripe-apiwrapper/releases)
-[![Latest Unstable Version](https://poser.pugx.org/symbiote/silverstripe-apiwrapper/v/unstable.svg)](https://packagist.org/packages/symbiote/silverstripe-apiwrapper)
-[![Total Downloads](https://poser.pugx.org/symbiote/silverstripe-apiwrapper/downloads.svg)](https://packagist.org/packages/symbiote/silverstripe-apiwrapper)
-[![License](https://poser.pugx.org/symbiote/silverstripe-apiwrapper/license.svg)](https://github.com/symbiote/silverstripe-apiwrapper/blob/master/LICENSE.md)
-
-
 Wrap your service APIs in a web layer
 
 ## Composer Install
 
-```
-composer require symbiote/silverstripe-apiwrapper:~1.0
+> Add this repo's URL first as a repository entry in composer.json
+
+```sh
+composer require symbiote/silverstripe-apiwrapper
 ```
 
 ## Requirements
