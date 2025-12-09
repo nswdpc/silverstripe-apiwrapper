@@ -16,6 +16,7 @@ class ServiceWrapperTestObject extends DataObject implements TestOnly
         'Title' => 'Varchar(128)',
     ];
 
+    #[\Override]
     public function canView($member = null)
     {
         return true;

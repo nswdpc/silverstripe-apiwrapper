@@ -9,6 +9,11 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\RandomGenerator;
 
+/**
+ * @property ?string $Token
+ * @property bool $RegenerateTokens
+ * @extends \SilverStripe\ORM\DataExtension<static>
+ */
 class TokenAccessible extends DataExtension
 {
     private $authToken;

@@ -39,6 +39,7 @@ class ServiceWrapperController extends Controller
         $this->objectMapper = new ObjectMapper();
     }
 
+    #[\Override]
     public function handleRequest(HTTPRequest $request): HTTPResponse
     {
         try {
@@ -93,7 +94,7 @@ class ServiceWrapperController extends Controller
         $service = ucfirst((string) $this->segment) . 'Service';
         $method = $request->shift();
         $body = $request->getBody();
-        $requestType = strlen((string) $body) > 0 ? 'POST' : $request->httpMethod(); // (count($request->postVars()) > 0 ? 'POST' : 'GET');
+        $requestType = (string) $body !== '' ? 'POST' : $request->httpMethod(); // (count($request->postVars()) > 0 ? 'POST' : 'GET');
 
         $svc = $this->service ?: Injector::inst()->get($service);
 
@@ -156,7 +157,7 @@ class ServiceWrapperController extends Controller
      *              All the arguments found in the request
      * @return mixed[]
      */
-    public function mapMethodToParameters(\ReflectionMethod $method, $allArgs): array
+    public function mapMethodToParameters(\ReflectionMethod $method, array $allArgs): array
     {
         $params = [];
         $refParams = $method->getParameters();
@@ -250,7 +251,7 @@ class ServiceWrapperController extends Controller
     }
 
 
-    protected function getServiceMethod($method, $allowedMethods, $requestType)
+    protected function getServiceMethod($method, array $allowedMethods, $requestType)
     {
         if (!isset($allowedMethods[$method])) {
             throw new WebServiceException(403, "You do not have permission to {$method}");
