@@ -4,10 +4,7 @@ namespace Symbiote\ApiWrapper;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Security\Member;
-use SilverStripe\Core\Convert;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;

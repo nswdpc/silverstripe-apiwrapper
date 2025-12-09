@@ -69,7 +69,7 @@ class TokenAccessible extends DataExtension
 
             // store the new token so it can be displayed later
             $controller = Controller::curr();
-            if($controller instanceof Controller) {
+            if ($controller instanceof Controller) {
                 $controller->getRequest()->getSession()->set('member_auth_token_' . $owner->ID, $this->authToken);
             }
         }
@@ -85,7 +85,7 @@ class TokenAccessible extends DataExtension
         $generator = new RandomGenerator();
         $token = $generator->randomToken('sha1');
         $owner = $this->getOwner();
-        if($owner instanceof Member) {
+        if ($owner instanceof Member) {
             $owner->Token = $owner->encryptWithUserSettings($token);
             $this->authToken = $token;
         }

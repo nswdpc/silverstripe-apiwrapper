@@ -33,7 +33,7 @@ class ApiWrapperController extends Controller
         }
 
         $apiVersions = self::config()->get('versions');
-        if(is_array($apiVersions)) {
+        if (is_array($apiVersions)) {
             foreach ($apiVersions as $version => $handlers) {
                 $res = $request->match($version, true);
                 if ($res) {
