@@ -31,20 +31,22 @@ class ApiWrapperController extends Controller
             return $this->addCorsHeaders($response);
         }
 
-        $apiVersions = self::config()->versions;
-        foreach ($apiVersions as $version => $handlers) {
-            $res = $request->match($version, true);
-            if ($res) {
-                foreach ($handlers as $segment => $cls) {
-                    if ($request->match($segment, true)) {
-                        $controller = is_string($cls) ? Injector::inst()->create($cls) : $cls;
-                        if ($controller) {
-                            if (method_exists($controller, 'setSegment')) {
-                                $controller->setSegment($segment);
-                            }
+        $apiVersions = self::config()->get('versions');
+        if(is_array($apiVersions)) {
+            foreach ($apiVersions as $version => $handlers) {
+                $res = $request->match($version, true);
+                if ($res) {
+                    foreach ($handlers as $segment => $cls) {
+                        if ($request->match($segment, true)) {
+                            $controller = is_string($cls) ? Injector::inst()->create($cls) : $cls;
+                            if ($controller) {
+                                if (method_exists($controller, 'setSegment')) {
+                                    $controller->setSegment($segment);
+                                }
 
-                            $response = $controller->handleRequest($request);
-                            return $this->addCorsHeaders($response);
+                                $response = $controller->handleRequest($request);
+                                return $this->addCorsHeaders($response);
+                            }
                         }
                     }
                 }
@@ -61,8 +63,9 @@ class ApiWrapperController extends Controller
 
     protected function addCorsHeaders(HTTPResponse $response): HTTPResponse
     {
-        if (count($this->config()->cors) !== 0) {
-            foreach ($this->config()->cors as $header => $val) {
+        $cors = $this->config()->get('cors');
+        if (is_array($cors) && $cors !== []) {
+            foreach ($cors as $header => $val) {
                 $response->addHeader($header, $val);
             }
         }
