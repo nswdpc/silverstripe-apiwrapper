@@ -98,10 +98,7 @@ class ServiceWrapperController extends Controller
         $svc = $this->service ?: Injector::inst()->get($service);
 
         if ($svc && method_exists($svc, 'webEnabledMethods')) {
-            $allowedMethods = [];
-            if (method_exists($svc, 'webEnabledMethods')) {
-                $allowedMethods = $svc->webEnabledMethods();
-            }
+            $allowedMethods = $svc->webEnabledMethods();
 
             $methodConfig = [];
             $callMethod = $method;
@@ -190,10 +187,6 @@ class ServiceWrapperController extends Controller
                 }
             } elseif (isset($allArgs[$refParm->getName()])) {
                 $params[$refParm->getName()] = $allArgs[$refParm->getName()];
-            } elseif ($refParm->getName() === 'file' && $requestType == 'POST') {
-                // TODO fix
-                // special case of a binary file upload
-                $params['file'] = $body;
             } elseif ($refParm->isOptional()) {
                 $params[$refParm->getName()] = $refParm->getDefaultValue();
             } else {
