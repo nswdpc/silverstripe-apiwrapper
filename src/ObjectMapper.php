@@ -3,10 +3,10 @@
 namespace Symbiote\ApiWrapper;
 
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\PaginatedList;
-use SilverStripe\ORM\SS_List;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\List\PaginatedList;
+use SilverStripe\Model\List\SS_List;
+use SilverStripe\Model\ArrayData;
+use SilverStripe\Model\ModelData;
 
 class ObjectMapper
 {
@@ -51,7 +51,7 @@ class ObjectMapper
 
         foreach ($mapping as $field => $name) {
             $value = $object->$field;
-            if ($value instanceof ViewableData) {
+            if ($value instanceof ModelData) {
                 $value = $this->mapObject($value);
             } elseif (is_array($value) || $value instanceof SS_List) {
                 $value = $this->mapList($value);
