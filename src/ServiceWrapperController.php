@@ -4,10 +4,7 @@ namespace Symbiote\ApiWrapper;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Control\HTTP;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Security\Member;
-use SilverStripe\Core\Convert;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
@@ -39,6 +36,7 @@ class ServiceWrapperController extends Controller
         $this->objectMapper = new ObjectMapper();
     }
 
+    #[\Override]
     public function handleRequest(HTTPRequest $request): HTTPResponse
     {
         try {
@@ -93,15 +91,12 @@ class ServiceWrapperController extends Controller
         $service = ucfirst((string) $this->segment) . 'Service';
         $method = $request->shift();
         $body = $request->getBody();
-        $requestType = strlen((string) $body) > 0 ? 'POST' : $request->httpMethod(); // (count($request->postVars()) > 0 ? 'POST' : 'GET');
+        $requestType = (string) $body !== '' ? 'POST' : $request->httpMethod(); // (count($request->postVars()) > 0 ? 'POST' : 'GET');
 
         $svc = $this->service ?: Injector::inst()->get($service);
 
         if ($svc && method_exists($svc, 'webEnabledMethods')) {
-            $allowedMethods = [];
-            if (method_exists($svc, 'webEnabledMethods')) {
-                $allowedMethods = $svc->webEnabledMethods();
-            }
+            $allowedMethods = $svc->webEnabledMethods();
 
             $methodConfig = [];
             $callMethod = $method;
@@ -159,7 +154,7 @@ class ServiceWrapperController extends Controller
      *              All the arguments found in the request
      * @return mixed[]
      */
-    public function mapMethodToParameters(\ReflectionMethod $method, $allArgs): array
+    public function mapMethodToParameters(\ReflectionMethod $method, array $allArgs): array
     {
         $params = [];
         $refParams = $method->getParameters();
@@ -190,10 +185,6 @@ class ServiceWrapperController extends Controller
                 }
             } elseif (isset($allArgs[$refParm->getName()])) {
                 $params[$refParm->getName()] = $allArgs[$refParm->getName()];
-            } elseif ($refParm->getName() === 'file' && $requestType == 'POST') {
-                // TODO fix
-                // special case of a binary file upload
-                $params['file'] = $body;
             } elseif ($refParm->isOptional()) {
                 $params[$refParm->getName()] = $refParm->getDefaultValue();
             } else {
@@ -257,7 +248,7 @@ class ServiceWrapperController extends Controller
     }
 
 
-    protected function getServiceMethod($method, $allowedMethods, $requestType)
+    protected function getServiceMethod($method, array $allowedMethods, $requestType)
     {
         if (!isset($allowedMethods[$method])) {
             throw new WebServiceException(403, "You do not have permission to {$method}");

@@ -10,7 +10,6 @@ use SilverStripe\ORM\DataObject;
 
 class ServiceWrapperTest extends SapphireTest
 {
-
     protected $usesDatabase = true;
 
     protected static $extra_dataobjects = [

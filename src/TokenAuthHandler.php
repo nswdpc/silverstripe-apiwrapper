@@ -43,6 +43,6 @@ class TokenAuthHandler implements AuthenticationHandler
 
     public function logOut(?HTTPRequest $request = null)
     {
-        Security::setCurrentUser(null);
+        Security::setCurrentUser();
     }
 }

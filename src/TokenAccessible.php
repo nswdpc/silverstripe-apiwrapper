@@ -9,6 +9,11 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\RandomGenerator;
 
+/**
+ * @property ?string $Token
+ * @property bool $RegenerateTokens
+ * @extends \SilverStripe\ORM\DataExtension<static>
+ */
 class TokenAccessible extends DataExtension
 {
     private $authToken;
@@ -20,12 +25,15 @@ class TokenAccessible extends DataExtension
 
     public function onBeforeWrite()
     {
-        if (!$this->getOwner()->Token) {
-            $this->getOwner()->RegenerateTokens = true;
+
+        /** @var \SilverStripe\ORM\DataObject $owner */
+        $owner = $this->getOwner();
+        if (!$owner->Token) {
+            $owner->RegenerateTokens = true;
         }
 
-        if ($this->getOwner()->RegenerateTokens) {
-            $this->getOwner()->RegenerateTokens = false;
+        if ($owner->RegenerateTokens) {
+            $owner->RegenerateTokens = false;
             $this->generateTokens();
         }
     }
@@ -34,12 +42,14 @@ class TokenAccessible extends DataExtension
     {
         parent::updateCMSFields($fields);
 
+        /** @var \SilverStripe\ORM\DataObject $owner */
+        $owner = $this->getOwner();
         $token = $this->userToken();
 
         if (!$token) {
             $token = "This user token can no longer be displayed - if you do not know this value, regenerate tokens by selecting Regenerate below";
         } else {
-            $token = $this->getOwner()->ID . ':' . $token;
+            $token = $owner->ID . ':' . $token;
         }
 
         $readOnly = ReadonlyField::create('DisplayToken', 'Token', $token);
@@ -54,8 +64,14 @@ class TokenAccessible extends DataExtension
     public function onAfterWrite()
     {
         if ($this->authToken) {
+            /** @var \SilverStripe\ORM\DataObject $owner */
+            $owner = $this->getOwner();
+
             // store the new token so it can be displayed later
-            Controller::curr()->getRequest()->getSession()->set('member_auth_token_' . $this->getOwner()->ID, $this->authToken);
+            $controller = Controller::curr();
+            if ($controller instanceof Controller) {
+                $controller->getRequest()->getSession()->set('member_auth_token_' . $owner->ID, $this->authToken);
+            }
         }
     }
 
@@ -68,15 +84,18 @@ class TokenAccessible extends DataExtension
     {
         $generator = new RandomGenerator();
         $token = $generator->randomToken('sha1');
-        $member = $this->getOwner();
-        if($member instanceof Member) {
-            $this->getOwner()->Token = $member->encryptWithUserSettings($token);
+        $owner = $this->getOwner();
+        if ($owner instanceof Member) {
+            $owner->Token = $owner->encryptWithUserSettings($token);
             $this->authToken = $token;
         }
     }
 
     public function userToken()
     {
-        return Controller::has_curr() ? Controller::curr()->getRequest()->getSession()->get('member_auth_token_' . $this->getOwner()->ID) : null;
+        /** @var \SilverStripe\ORM\DataObject $owner */
+        $owner = $this->getOwner();
+        $controller = Controller::curr();
+        return $controller ? $controller->getRequest()->getSession()->get('member_auth_token_' . $owner->ID) : null;
     }
 }
