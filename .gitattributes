@@ -1,7 +1,8 @@
-/tests export-ignore
-/docs export-ignore
-/phpunit.xml.dist export-ignore
-README.md export-ignore
-LICENSE.md export-ignore
-CONTRIBUTING.md export-ignore
-/.github export-ignore
+/tests                  export-ignore
+/docs                   export-ignore
+/phpunit.xml.dist       export-ignore
+README.md               export-ignore
+LICENSE.md              export-ignore
+CONTRIBUTING.md         export-ignore
+/.editorconfig          export-ignore
+/.github                export-ignore

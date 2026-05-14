@@ -5,16 +5,16 @@ namespace Symbiote\ApiWrapper;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\ReadonlyField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\RandomGenerator;
 
 /**
  * @property ?string $Token
  * @property bool $RegenerateTokens
- * @extends \SilverStripe\ORM\DataExtension<static>
+ * @extends \SilverStripe\Core\Extension<static>
  */
-class TokenAccessible extends DataExtension
+class TokenAccessible extends Extension
 {
     private $authToken;
 
@@ -40,7 +40,6 @@ class TokenAccessible extends DataExtension
 
     public function updateCMSFields(FieldList $fields)
     {
-        parent::updateCMSFields($fields);
 
         /** @var \SilverStripe\ORM\DataObject $owner */
         $owner = $this->getOwner();
@@ -82,7 +81,7 @@ class TokenAccessible extends DataExtension
      */
     public function generateTokens()
     {
-        $generator = new RandomGenerator();
+        $generator = RandomGenerator::create();
         $token = $generator->randomToken('sha1');
         $owner = $this->getOwner();
         if ($owner instanceof Member) {
